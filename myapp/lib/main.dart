@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './poke_list_item.dart';
 import './theme_mode_selection_page.dart';
-import './preferences/theme_mode.dart';
+import './utils/theme_mode.dart';
+import './models/theme_mode.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final SharedPreferences pref = await SharedPreferences.getInstance();
+  final themeModeNotifier = ThemeModeNotifier(pref);
+
+  runApp(ChangeNotifierProvider(
+    create: (context) => themeModeNotifier,
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -15,25 +25,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.system;
-
-  @override
-  void initState() {
-    super.initState();
-    loadThemeMode().then((mode) => setState(() => _themeMode = mode));
-  }
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Pokemon Flutter',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return Consumer<ThemeModeNotifier>(
+      builder: (context, mode, child) => MaterialApp(
+        title: 'Pokemon Flutter',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        darkTheme: ThemeData.dark(),
+        themeMode: mode.mode,
+        home: const TopPage(),
       ),
-      darkTheme: ThemeData.dark(),
-      themeMode: _themeMode,
-      home: const TopPage(),
     );
   }
 }
@@ -87,45 +91,33 @@ class PokeList extends StatelessWidget {
   }
 }
 
-class Settings extends StatefulWidget {
+class Settings extends StatelessWidget {
   const Settings({super.key});
   @override
-  _SettingsState createState() => _SettingsState();
-}
-
-class _SettingsState extends State<Settings> {
-  ThemeMode _themeMode = ThemeMode.system;
-
-  @override
-  void initState() {
-    super.initState();
-    loadThemeMode().then((mode) => setState(() => _themeMode = mode));
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
-          leading: Icon(Icons.lightbulb),
-          title: Text('Dark/Lignt Mode'),
-          trailing: Text((_themeMode == ThemeMode.system
-              ? 'System'
-              : _themeMode == ThemeMode.light
-                  ? 'Light'
-                  : 'Dark'
-          )),
-          onTap: () async {
-            final ret = await Navigator.of(context).push<ThemeMode>(
-              MaterialPageRoute(
-                builder: (context) => ThemeModeSelectionPage(init: _themeMode),
-              ),
-            );
-            setState(() => _themeMode = ret!);
-            await saveThemeMode(_themeMode);
-          },
-        ),
-      ],
+    return Consumer<ThemeModeNotifier>(
+      builder: (context, mode, child) => ListView(
+        children: [
+          ListTile(
+            leading: Icon(Icons.lightbulb),
+            title: Text('Dark/Lignt Mode'),
+            trailing: Text((mode.mode == ThemeMode.system
+                ? 'System'
+                : mode.mode == ThemeMode.light
+                    ? 'Light'
+                    : 'Dark'
+            )),
+            onTap: () async {
+              final ret = await Navigator.of(context).push<ThemeMode>(
+                MaterialPageRoute(
+                  builder: (context) => ThemeModeSelectionPage(init: mode.mode),
+                ),
+              );
+              mode.update(ret!);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

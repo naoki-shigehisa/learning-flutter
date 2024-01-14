@@ -4,13 +4,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 const defaultTheme = ThemeMode.system;
 
 Future<void> saveThemeMode(ThemeMode mode) async {
-  final pref = await SharedPreferences.getInstance();
-  pref.setString(mode.key, mode.name);
+  final _pref = await SharedPreferences.getInstance();
+  _pref.setString(mode.key, mode.name);
 }
 
-Future<ThemeMode> loadThemeMode() async {
-  final pref = await SharedPreferences.getInstance();
-  return toMode(pref.getString(defaultTheme.key) ?? defaultTheme.name);
+Future<ThemeMode> loadThemeMode(SharedPreferences? pref) async {
+  if (pref != null) {
+    return toMode(pref.getString(defaultTheme.key) ?? defaultTheme.name);
+  }
+
+  final _pref = await SharedPreferences.getInstance();
+  return toMode(_pref.getString(defaultTheme.key) ?? defaultTheme.name);
 }
 
 ThemeMode toMode(String str) {
