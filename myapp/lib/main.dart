@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
 import './poke_list_item.dart';
+import './theme_mode_selection_page.dart';
+import './preferences/theme_mode.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  @override
+  void initState() {
+    super.initState();
+    loadThemeMode().then((mode) => setState(() => _themeMode = mode));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    ThemeMode mode = ThemeMode.system;
     return MaterialApp(
       title: 'Pokemon Flutter',
       theme: ThemeData(
@@ -18,7 +32,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       darkTheme: ThemeData.dark(),
-      themeMode: mode,
+      themeMode: _themeMode,
       home: const TopPage(),
     );
   }
@@ -73,17 +87,45 @@ class PokeList extends StatelessWidget {
   }
 }
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({super.key});
+  @override
+  _SettingsState createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  @override
+  void initState() {
+    super.initState();
+    loadThemeMode().then((mode) => setState(() => _themeMode = mode));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: const [
+      children: [
         ListTile(
           leading: Icon(Icons.lightbulb),
           title: Text('Dark/Lignt Mode'),
-        )
-      ]
+          trailing: Text((_themeMode == ThemeMode.system
+              ? 'System'
+              : _themeMode == ThemeMode.light
+                  ? 'Light'
+                  : 'Dark'
+          )),
+          onTap: () async {
+            final ret = await Navigator.of(context).push<ThemeMode>(
+              MaterialPageRoute(
+                builder: (context) => ThemeModeSelectionPage(init: _themeMode),
+              ),
+            );
+            setState(() => _themeMode = ret!);
+            await saveThemeMode(_themeMode);
+          },
+        ),
+      ],
     );
   }
 }
