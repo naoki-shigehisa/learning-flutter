@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './theme_mode_selection_page.dart';
-import './models/theme_mode.dart';
+import '../../models/theme_mode.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});

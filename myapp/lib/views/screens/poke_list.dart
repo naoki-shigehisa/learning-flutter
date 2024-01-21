@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import './poke_list_item.dart';
-import './models/pokemon.dart';
-import './const/pokeapi.dart';
+import '../widgets/poke_list/poke_list_item.dart';
+import '../../models/pokemon.dart';
+import '../../const/pokeapi.dart';
 
 class PokeList extends StatefulWidget {
   const PokeList({super.key});

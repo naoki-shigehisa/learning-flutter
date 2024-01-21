@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './models/pokemon.dart';
-import './const/pokeapi.dart';
+import '../../models/pokemon.dart';
+import '../../const/pokeapi.dart';
 
 class PokeDetail extends StatelessWidget {
   const PokeDetail({super.key, required this.poke});
