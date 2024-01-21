@@ -6,14 +6,19 @@ import './poke_list_item.dart';
 import './settings.dart';
 import './theme_mode_selection_page.dart';
 import './models/theme_mode.dart';
+import './models/pokemon.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final SharedPreferences pref = await SharedPreferences.getInstance();
   final themeModeNotifier = ThemeModeNotifier(pref);
+  final pokemonsNotifier = PokemonsNotifier();
 
-  runApp(ChangeNotifierProvider(
-    create: (context) => themeModeNotifier,
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<ThemeModeNotifier>(create: (context) => themeModeNotifier),
+      ChangeNotifierProvider<PokemonsNotifier>(create: (context) => pokemonsNotifier),
+    ],
     child: const MyApp(),
   ));
 }
