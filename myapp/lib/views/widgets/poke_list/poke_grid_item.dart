@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../screens/poke_detail.dart';
 import '../../../models/pokemon.dart';
 import '../../../const/pokeapi.dart';
@@ -19,17 +20,20 @@ class PokeGridItem extends StatelessWidget {
                 ),
               ),
             },
-            child: Container(
-              height: 100,
-              width: 100,
-              decoration: BoxDecoration(
-                color: (pokeTypeColors[poke!.types.first] ?? Colors.grey[100])
-                    ?.withOpacity(.3),
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  fit: BoxFit.fitWidth,
-                  image: CachedNetworkImageProvider(
-                    poke!.imageUrl,
+            child: Hero(
+              tag: poke!.name,
+              child: Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                  color: (pokeTypeColors[poke!.types.first] ?? Colors.grey[100])
+                      ?.withOpacity(.3),
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    fit: BoxFit.fitWidth,
+                    image: CachedNetworkImageProvider(
+                      poke!.imageUrl,
+                    ),
                   ),
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../models/pokemon.dart';
 import '../../const/pokeapi.dart';
 import '../../models/favorite.dart';
@@ -35,10 +36,13 @@ class PokeDetail extends StatelessWidget {
                 children: [
                   Container(
                     padding: EdgeInsets.all(32),
-                    child: CachedNetworkImage(
-                      poke.imageUrl,
-                      height: 100,
-                      width: 100,
+                    child: Hero(
+                      tag: poke.name,
+                      child: CachedNetworkImage(
+                        imageUrl: poke.imageUrl,
+                        height: 200,
+                        width: 200,
+                      ),
                     ),
                   ),
                   Container(

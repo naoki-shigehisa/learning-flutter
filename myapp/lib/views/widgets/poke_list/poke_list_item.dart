@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../screens/poke_detail.dart';
 import '../../../models/pokemon.dart';
 import '../../../const/pokeapi.dart';
