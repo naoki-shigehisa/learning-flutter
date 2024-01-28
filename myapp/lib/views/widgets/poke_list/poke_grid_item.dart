@@ -28,7 +28,7 @@ class PokeGridItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 image: DecorationImage(
                   fit: BoxFit.fitWidth,
-                  image: NetworkImage(
+                  image: CachedNetworkImageProvider(
                     poke!.imageUrl,
                   ),
                 ),
